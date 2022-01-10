@@ -1,0 +1,65 @@
+﻿@layout AdminLayout
+@page "/edit/{id:int}"
+@using Model
+@using Interfaces
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<h1>Update user</h1>
+<p style="color:red; text-align:center">Are you sure you want to update this user?</p>
+<p>For user activation, only change the number active to 1</p>
+
+<EditForm Model="@user">
+    <table class="table">
+        <tr>
+            <td>Username:</td>
+            <td><input type="text" @bind="user.txt_user" /></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input type="text" @bind="user.txt_password" /></td>
+        </tr>
+        <tr>
+            <td>Nombre:</td>
+            <td><input type="text" @bind="user.txt_nombre" /></td>
+        </tr>
+        <tr>
+            <td>Apellido:</td>
+            <td><input type="text" @bind="user.txt_apellido" /></td>
+        </tr>
+        <tr>
+            <td>Document number:</td>
+            <td><input type="text" @bind="user.nro_doc" /></td>
+        </tr>
+        <tr>
+            <td>Active:</td>
+            <td><input type="text" @bind="user.sn_activo" /></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:center">
+                <input type="submit" value="Yes" @onclick="Update" />
+                <input type="submit" value="No" @onclick="Cancel" />
+            </td>
+        </tr>
+    </table>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    tUser user = new tUser();
+
+    protected void Cancel() {
+        NavigationManager.NavigateTo("/Admin/adminindex");
+    }
+
+    protected async Task Update() {
+        await UserService.UpdateUser(user);
+        NavigationManager.NavigateTo("/Admin/adminindex");
+    }
+
+    protected override async Task OnInitializedAsync() {
+        user = await UserService.GetUserDetails(id);
+    }
+}

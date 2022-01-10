@@ -1,0 +1,47 @@
+﻿@page "/register"
+@using Model
+@using Interfaces
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<h3>Register</h3>
+
+<EditForm Model="@user">
+    <table class="table">
+        <tr>
+            <td>Username:</td>
+            <td><input type="text" @bind="user.txt_user" /></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input type="text" @bind="user.txt_password" /></td>
+        </tr>
+        <tr>
+            <td>Nombre:</td>
+            <td><input type="text" @bind="user.txt_nombre" /></td>
+        </tr>
+        <tr>
+            <td>Apellido:</td>
+            <td><input type="text" @bind="user.txt_apellido" /></td>
+        </tr>
+        <tr>
+            <td>Document number:</td>
+            <td><input type="text" @bind="user.nro_doc" /></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:center">
+                <input type="submit" value="Sign Up" @onclick="SignUp" />                
+            </td>
+        </tr>
+    </table>
+</EditForm>
+
+@code {
+    tUser user = new tUser();
+
+    protected async Task SignUp() {
+        await UserService.InsertUser(user);
+        NavigationManager.NavigateTo("/");
+    }
+
+}

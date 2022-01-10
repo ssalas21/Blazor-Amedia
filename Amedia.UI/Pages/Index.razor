@@ -1,0 +1,45 @@
+﻿@page "/"
+@using Model
+@using Interfaces
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@login">
+    <table>
+        <tr>
+            <td>User:</td>
+            <td><input type="text" @bind="login.user" /></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input type="text" @bind="login.pass" /></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:center">
+                <input type="submit" value="Login" @onclick="Login" />
+                <input type="button" value="Register" @onclick="Register" />
+            </td>
+        </tr>
+    </table>
+</EditForm>
+
+
+@code{
+    Login login = new Login();
+
+    protected async Task Login() {
+        int user = await UserService.GetUser(login.user, login.pass);
+        if (user != null) {            
+            if (Convert.ToInt32(user) == 1) { 
+                NavigationManager.NavigateTo("/Admin/AdminIndex");
+            } else { 
+                NavigationManager.NavigateTo("/User/userindex"); 
+            }
+        }
+    }
+
+    protected void Register() {
+
+    }
+
+}

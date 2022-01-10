@@ -1,0 +1,96 @@
+﻿@layout AdminLayout
+@page "/Admin/adminindex"
+@using Model
+@using Interfaces
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<h3>Add User</h3>
+
+<EditForm Model="@user">
+    <table class="table">
+        <tr>
+            <td>Username:</td>
+            <td><input type="text" @bind="user.txt_user" /></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input type="text" @bind="user.txt_password" /></td>
+        </tr>
+        <tr>
+            <td>Nombre:</td>
+            <td><input type="text" @bind="user.txt_nombre" /></td>
+        </tr>
+        <tr>
+            <td>Apellido:</td>
+            <td><input type="text" @bind="user.txt_apellido" /></td>
+        </tr>
+        <tr>
+            <td>Document number:</td>
+            <td><input type="text" @bind="user.nro_doc" /></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:center">
+                <input type="submit" value="Sign Up" @onclick="SignUp" />
+            </td>
+        </tr>
+    </table>
+</EditForm>
+<br/>
+<h3>Active, Edit and Delete User</h3>
+@if (users == null) {
+    <p><em>Loading...</em></p>
+} else {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Usuario</th>
+                <th>Contraseña</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Nro Documento</th>
+                <th>Rol</th>
+                <th>Activo</th>                
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var aux in users) {
+                <tr>
+                    <td>@aux.cod_usuario</td>
+                    <td>@aux.txt_user</td>
+                    <td>@aux.txt_password</td>
+                    <td>@aux.txt_nombre</td>
+                    <td>@aux.txt_apellido</td>
+                    <td>@aux.nro_doc</td>
+                    <td>@aux.cod_rol</td>
+                    <td>@aux.sn_activo</td>                    
+                    <td><a href="/edit/@aux.cod_usuario"><i>Edit</i></a></td>
+                    <td><a href="/delete/@aux.cod_usuario"><i>Delete</i></a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    tUser user = new tUser();
+
+    private IEnumerable<tUser> users;
+
+    protected async override Task OnInitializedAsync() {
+        try {
+            users = await UserService.GetAllUsers();
+        } catch (Exception) {
+
+            throw;
+        }
+    }
+
+    protected async Task SignUp() {
+        await UserService.InsertUser(user);
+    }
+
+}
